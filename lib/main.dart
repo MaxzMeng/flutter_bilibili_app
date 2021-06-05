@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bilibili_app/http/core/HiNet.dart';
+import 'package:flutter_bilibili_app/http/request/test_request.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,15 +50,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void _incrementCounter() async {
+    TestRequest request = TestRequest();
+    request.add("aa", "test")
+        .add("bb", "test");
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
   }
 
   @override
@@ -98,7 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline4,
             ),
           ],
         ),
