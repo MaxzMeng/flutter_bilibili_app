@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bilibili_app/http/core/HiNet.dart';
+import 'package:flutter_bilibili_app/http/core/hi_error.dart';
 import 'package:flutter_bilibili_app/http/request/test_request.dart';
 
 void main() {
@@ -52,10 +53,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
     TestRequest request = TestRequest();
-    request.add("aa", "test")
-        .add("bb", "test");
-    var result = await HiNet.getInstance().fire(request);
-    print(result);
+    request.add("aa", "test").add("bb", "test");
+    try {
+      var result = await HiNet.getInstance().fire(request);
+      print(result);
+    } on NeedAuth catch (e) {
+      print(e);
+    } on NeedLogin catch (e) {
+      print(e);
+    } on HiNetError catch (e) {
+      print(e);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -97,10 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline4,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),

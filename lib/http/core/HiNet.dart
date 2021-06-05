@@ -1,4 +1,8 @@
+import 'package:flutter_bilibili_app/http/core/mock_adapter.dart';
 import 'package:flutter_bilibili_app/http/request/base_request.dart';
+
+import 'hi_error.dart';
+import 'hi_net_adapter.dart';
 
 class HiNet {
   HiNet._();
@@ -13,24 +17,48 @@ class HiNet {
   }
 
   Future fire(BaseRequest request) async {
-    var response = await send(request);
-    var result = response['data'];
-    _printLog(result);
-    return result;
+    HiNetResponse? response;
+    var error;
+    try {
+      response = await send(request);
+    } on HiNetError catch (e) {
+      error = e;
+      response = e.data;
+      printLog(e.message);
+    } catch (e) {
+      //其它异常
+      error = e;
+      printLog(e);
+    }
+    if (response == null) {
+      printLog(error);
+    }
+    var result = response?.data;
+    printLog(result);
+    var status = response?.statusCode ?? 0;
+    switch (status) {
+      case 200:
+        return result;
+        break;
+      case 401:
+        throw NeedLogin();
+        break;
+      case 403:
+        throw NeedAuth(result.toString(), data: result);
+        break;
+      default:
+        throw HiNetError(status, result.toString(), data: result);
+        break;
+    }
   }
 
-  Future<dynamic> send<T>(BaseRequest request) async {
-    _printLog('url:${request.url()}');
-    _printLog('method:${request.httpMethod()}');
-    request.addHeader("token", "123");
-    _printLog('header:${request.header}');
-    return Future.value({
-      "statusCode": 200,
-      "data": {"code": 0, "message": 'success'}
-    });
+  Future<HiNetResponse<T>> send<T>(BaseRequest request) async {
+    ///使用Dio发送请求
+    HiNetAdapter adapter = MockAdapter();
+    return adapter.send(request);
   }
 
-  void _printLog(log) {
+  void printLog(log) {
     print('hi_net:' + log.toString());
   }
 }
