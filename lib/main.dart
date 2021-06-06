@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bilibili_app/db/hi_cache.dart';
+import 'package:flutter_bilibili_app/http/request/test_request.dart';
+
+import 'http/core/hi_error.dart';
+import 'http/core/hi_net.dart';
 
 void main() {
   runApp(MyApp());
@@ -56,6 +60,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() async {
+    TestRequest request = TestRequest();
+    request.add("aa", "test").add("bb", "test").add("requestPrams", "kkkk");
+    try {
+      var result = await HiNet.getInstance().fire(request);
+      print(result);
+    } on NeedAuth catch (e) {
+      print(e);
+    } on NeedLogin catch (e) {
+      print(e);
+    } on HiNetError catch (e) {
+      print(e);
+    } catch (e) {
+      print(e);
+    }
+
     HiCache.getInstance().setString("test", "12345");
     var result = HiCache.getInstance().get("test");
     print(result);
