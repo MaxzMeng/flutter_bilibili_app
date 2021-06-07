@@ -1,3 +1,5 @@
+import 'package:flutter_bilibili_app/http/dao/login_dao.dart';
+
 enum HttpMethod { GET, POST, DELETE }
 
 abstract class BaseRequest {
@@ -27,6 +29,9 @@ abstract class BaseRequest {
     } else {
       uri = Uri.http(authority(), pathStr, params);
     }
+    if (needLogin()) {
+      addHeader('boarding-pass', LoginDao.getBoardingPass());
+    }
     print('url:${uri.toString()}');
     return uri.toString();
   }
@@ -40,9 +45,12 @@ abstract class BaseRequest {
     return this;
   }
 
-  Map<String,dynamic> header = Map();
+  Map<String, dynamic> header = {
+    'course-flag': 'fa',
+    'auth-token': ''
+  };
 
-  BaseRequest addHeader(String k,Object v) {
+  BaseRequest addHeader(String k, Object v) {
     header[k] = v.toString();
     return this;
   }

@@ -55,7 +55,7 @@ class HiNet {
 
   Future<HiNetResponse<T>> send<T>(BaseRequest request) async {
     ///使用Dio发送请求
-    HiNetAdapter adapter = HttpAdapter();
+    HiNetAdapter adapter = DioAdapter();
     return adapter.send(request);
   }
 
