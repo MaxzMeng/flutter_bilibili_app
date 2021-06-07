@@ -3,6 +3,7 @@ import 'package:flutter_bilibili_app/db/hi_cache.dart';
 import 'package:flutter_bilibili_app/http/dao/login_dao.dart';
 import 'package:flutter_bilibili_app/http/request/notice_request.dart';
 import 'package:flutter_bilibili_app/http/request/test_request.dart';
+import 'package:flutter_bilibili_app/page/registration_page.dart';
 
 import 'http/core/hi_error.dart';
 import 'http/core/hi_net.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: RegistrationPage()
     );
   }
 }
