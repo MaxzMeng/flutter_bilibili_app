@@ -3,6 +3,7 @@ import 'package:flutter_bilibili_app/db/hi_cache.dart';
 import 'package:flutter_bilibili_app/http/dao/login_dao.dart';
 import 'package:flutter_bilibili_app/http/request/notice_request.dart';
 import 'package:flutter_bilibili_app/http/request/test_request.dart';
+import 'package:flutter_bilibili_app/page/login_page.dart';
 import 'package:flutter_bilibili_app/page/registration_page.dart';
 import 'package:flutter_bilibili_app/util/color.dart';
 
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: white,
         ),
-        home: RegistrationPage());
+        home: LoginPage());
   }
 }
 

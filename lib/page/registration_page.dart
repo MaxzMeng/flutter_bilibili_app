@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bilibili_app/http/dao/login_dao.dart';
 import 'package:flutter_bilibili_app/util/string_util.dart';
+import 'package:flutter_bilibili_app/util/toast_util.dart';
 import 'package:flutter_bilibili_app/widget/appbar.dart';
 import 'package:flutter_bilibili_app/widget/login_button.dart';
 import 'package:flutter_bilibili_app/widget/login_effect.dart';
@@ -140,8 +141,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
         if(widget.onJumpToLogin!=null) {
           widget.onJumpToLogin!();
         }
+        showToast('登录成功');
       }else {
         print(result['msg']);
+        showWarnToast(result['msg']);
       }
     }catch (e){
       print(e);
