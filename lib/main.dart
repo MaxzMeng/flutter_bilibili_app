@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bilibili_app/db/hi_cache.dart';
 import 'package:flutter_bilibili_app/model/video_model.dart';
 import 'package:flutter_bilibili_app/page/home_page.dart';
+import 'package:flutter_bilibili_app/page/login_page.dart';
+import 'package:flutter_bilibili_app/page/registration_page.dart';
 import 'package:flutter_bilibili_app/page/video_detail_page.dart';
+import 'package:flutter_bilibili_app/util/color.dart';
+
+import 'http/dao/login_dao.dart';
+import 'navigator/hi_navigator.dart';
 
 void main() {
   runApp(BiliBiliApp());
@@ -16,21 +23,22 @@ class BiliBiliApp extends StatefulWidget {
 
 class _BiliBiliAppState extends State<BiliBiliApp> {
   BilibiliRouteDelegate _routeDelegate = BilibiliRouteDelegate();
-  BilibiliRouteInformationParser _routeInformationParser =
-      BilibiliRouteInformationParser();
 
   @override
   Widget build(BuildContext context) {
-    var widget = Router(
-      routerDelegate: _routeDelegate,
-      routeInformationParser: _routeInformationParser,
-      routeInformationProvider: PlatformRouteInformationProvider(
-          initialRouteInformation: RouteInformation(location: "/")),
-    );
-
-    return MaterialApp(
-      home: widget,
-    );
+    return FutureBuilder<HiCache>(
+        future: HiCache.preInit(),
+        builder: (BuildContext context, AsyncSnapshot<HiCache> snapshot) {
+          var widget = snapshot.connectionState == ConnectionState.done
+              ? Router(routerDelegate: _routeDelegate)
+              : Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+          return MaterialApp(
+            home: widget,
+            theme: ThemeData(primarySwatch: white),
+          );
+        });
   }
 }
 
@@ -39,21 +47,49 @@ class BilibiliRouteDelegate extends RouterDelegate<BilibiliRoutePath>
   final GlobalKey<NavigatorState> navigatorKey;
 
   BilibiliRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>();
-  BilibiliRoutePath? path;
+  RouteStatus _routeStatus = RouteStatus.home;
   List<MaterialPage> pages = [];
   VideoModel? videoModel;
 
+  RouteStatus get routeStatus {
+    if (_routeStatus != RouteStatus.registration && !hasLogin) {
+      return _routeStatus = RouteStatus.login;
+    } else if (videoModel != null) {
+      return _routeStatus = RouteStatus.detail;
+    } else {
+      return _routeStatus;
+    }
+  }
+
+  bool get hasLogin => LoginDao.getBoardingPass() != null;
+
   @override
   Widget build(BuildContext context) {
-    pages = [
-      pageWrap(HomePage(
+    var index = getPageIndex(pages, routeStatus);
+    List<MaterialPage> tempPages = pages;
+    if (index != -1) {
+      tempPages = tempPages.sublist(0, index);
+    }
+    var page;
+    if (routeStatus == RouteStatus.home) {
+      //跳转首页时将栈中其它页面进行出栈，因为首页不可回退
+      pages.clear();
+      page = pageWrap(HomePage(
         onJumpToDetail: (videoModel) {
           this.videoModel = videoModel;
           notifyListeners();
         },
-      )),
-      if (videoModel != null) pageWrap(VideoDetailPage(videoModel!))
-    ];
+      ));
+    } else if (routeStatus == RouteStatus.detail) {
+      page = pageWrap(VideoDetailPage(videoModel!));
+    } else if (routeStatus == RouteStatus.registration) {
+      page = pageWrap(RegistrationPage());
+    } else if (routeStatus == RouteStatus.login) {
+      page = pageWrap(LoginPage());
+    }
+
+    tempPages = [...tempPages, page];
+    pages = tempPages;
 
     return Navigator(
       key: navigatorKey,
@@ -68,23 +104,7 @@ class BilibiliRouteDelegate extends RouterDelegate<BilibiliRoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(BilibiliRoutePath configuration) async {
-    this.path = currentConfiguration;
-  }
-}
-
-class BilibiliRouteInformationParser
-    extends RouteInformationParser<BilibiliRoutePath> {
-  @override
-  Future<BilibiliRoutePath> parseRouteInformation(
-      RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location ?? "");
-    print('uri:$uri');
-    if (uri.pathSegments.length == 0) {
-      return BilibiliRoutePath.home();
-    }
-    return BilibiliRoutePath.detail();
-  }
+  Future<void> setNewRoutePath(BilibiliRoutePath configuration) async {}
 }
 
 class BilibiliRoutePath {
@@ -93,8 +113,4 @@ class BilibiliRoutePath {
   BilibiliRoutePath.home() : _location = "/";
 
   BilibiliRoutePath.detail() : _location = "detail";
-}
-
-pageWrap(Widget child) {
-  return MaterialPage(key: ValueKey(child.hashCode), child: child);
 }
