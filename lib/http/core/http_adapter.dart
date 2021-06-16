@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bilibili_app/http/core/hi_error.dart';
 import 'package:flutter_bilibili_app/http/core/hi_net_adapter.dart';
 import 'package:flutter_bilibili_app/http/request/base_request.dart';
@@ -41,10 +43,10 @@ class HttpAdapter extends HiNetAdapter {
     return buildRes(response, request);
   }
 
-  HiNetResponse<String> buildRes<String>(
+  HiNetResponse<Map> buildRes<Map>(
       http.Response? response, BaseRequest request) {
-    return HiNetResponse<String>(
-        data: response?.body as String?,
+    return HiNetResponse<Map>(
+        data: jsonDecode(response?.body??""),
         request: request,
         statusCode: response?.statusCode ?? -1,
         statusMessage: response?.reasonPhrase,
