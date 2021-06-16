@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bilibili_app/navigator/bottom_navigator.dart';
 import 'package:flutter_bilibili_app/page/home_page.dart';
 import 'package:flutter_bilibili_app/page/login_page.dart';
 import 'package:flutter_bilibili_app/page/registration_page.dart';
@@ -27,7 +28,7 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.login;
   } else if (page.child is RegistrationPage) {
     return RouteStatus.registration;
-  } else if (page.child is HomePage) {
+  } else if (page.child is BottomNavigator) {
     return RouteStatus.home;
   } else if (page.child is VideoDetailPage) {
     return RouteStatus.detail;
