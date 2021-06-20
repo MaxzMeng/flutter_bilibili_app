@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bilibili_app/core/hi_state.dart';
 import 'package:flutter_bilibili_app/http/core/hi_error.dart';
 import 'package:flutter_bilibili_app/http/dao/home_dao.dart';
 import 'package:flutter_bilibili_app/model/home_mo.dart';
-import 'package:flutter_bilibili_app/model/video_model.dart';
 import 'package:flutter_bilibili_app/navigator/hi_navigator.dart';
 import 'package:flutter_bilibili_app/page/home_tab_page.dart';
 import 'package:flutter_bilibili_app/util/color.dart';
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
+class _HomePageState extends HiState<HomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   var _listener;
   late TabController _tabController;
