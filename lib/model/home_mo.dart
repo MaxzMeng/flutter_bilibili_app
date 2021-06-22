@@ -21,12 +21,12 @@ class HomeMo {
         categoryList!.add(new CategoryMo.fromJson(v));
       });
     }
-    // if (json['videoList'] != null) {
-    //   videoList = new List<VideoModel>.empty(growable: true);
-    //   json['videoList'].forEach((v) {
-    //     videoList.add(new VideoModel.fromJson(v));
-    //   });
-    // }
+    if (json['videoList'] != null) {
+      videoList = new List<VideoModel>.empty(growable: true);
+      json['videoList'].forEach((v) {
+        videoList.add(new VideoModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -37,7 +37,7 @@ class HomeMo {
     if (this.categoryList != null) {
       data['categoryList'] = this.categoryList!.map((v) => v.toJson()).toList();
     }
-    // data['videoList'] = this.videoList.map((v) => v.toJson()).toList();
+    data['videoList'] = this.videoList.map((v) => v.toJson()).toList();
     return data;
   }
 }
