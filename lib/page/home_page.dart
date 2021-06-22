@@ -7,6 +7,7 @@ import 'package:flutter_bilibili_app/navigator/hi_navigator.dart';
 import 'package:flutter_bilibili_app/page/home_tab_page.dart';
 import 'package:flutter_bilibili_app/util/color.dart';
 import 'package:flutter_bilibili_app/util/toast_util.dart';
+import 'package:flutter_bilibili_app/widget/navigation_bar.dart';
 import 'package:underline_indicator/underline_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,13 +49,17 @@ class _HomePageState extends HiState<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
-      appBar: AppBar(),
       body: Column(
         children: [
+          NavigationBar(
+            height: 50,
+            child: _appBar(),
+            color: Colors.white,
+          ),
           Container(
             color: Colors.white,
-            padding: EdgeInsets.only(top: 30),
             child: _tabBar(),
           ),
           Flexible(
@@ -115,5 +120,54 @@ class _HomePageState extends HiState<HomePage>
       print(e);
       showWarnToast(e.message);
     }
+  }
+
+  _appBar() {
+    return Padding(
+      padding: EdgeInsets.only(left: 15,right: 15),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {},
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(23),
+              child: Image(
+                height: 46,
+                width: 46,
+                image: AssetImage("images/avatar.png"),
+              ),
+            ),
+          ),
+          Expanded(
+              child: Padding(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: EdgeInsets.only(left: 10),
+                height: 32,
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ),
+                decoration: BoxDecoration(color: Colors.grey[100]),
+              ),
+            ),
+          )),
+          Icon(
+            Icons.explore_outlined,
+            color: Colors.grey,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 12),
+            child: Icon(
+              Icons.mail_outline,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
