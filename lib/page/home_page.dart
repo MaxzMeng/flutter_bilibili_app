@@ -11,7 +11,9 @@ import 'package:flutter_bilibili_app/widget/navigation_bar.dart';
 import 'package:underline_indicator/underline_indicator.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final ValueChanged<int>? onJumpTo;
+
+  const HomePage({Key? key, this.onJumpTo}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -124,11 +126,13 @@ class _HomePageState extends HiState<HomePage>
 
   _appBar() {
     return Padding(
-      padding: EdgeInsets.only(left: 15,right: 15),
+      padding: EdgeInsets.only(left: 15, right: 15),
       child: Row(
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              widget.onJumpTo?.call(3);
+            },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(23),
               child: Image(
