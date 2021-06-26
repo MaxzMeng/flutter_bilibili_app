@@ -7,6 +7,7 @@ import 'package:flutter_bilibili_app/navigator/hi_navigator.dart';
 import 'package:flutter_bilibili_app/page/home_tab_page.dart';
 import 'package:flutter_bilibili_app/util/color.dart';
 import 'package:flutter_bilibili_app/util/toast_util.dart';
+import 'package:flutter_bilibili_app/widget/loading_container.dart';
 import 'package:flutter_bilibili_app/widget/navigation_bar.dart';
 import 'package:underline_indicator/underline_indicator.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends HiState<HomePage>
   late TabController _tabController;
   List<CategoryMo> categoryList = [];
   List<BannerMo> bannerList = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -53,28 +55,30 @@ class _HomePageState extends HiState<HomePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: Column(
-        children: [
-          NavigationBar(
-            height: 50,
-            child: _appBar(),
-            color: Colors.white,
-          ),
-          Container(
-            color: Colors.white,
-            child: _tabBar(),
-          ),
-          Flexible(
-              child: TabBarView(
-                  controller: _tabController,
-                  children: categoryList
-                      .map((e) => HomeTabPage(
-                            categoryName: e.name,
-                            bannerList: e.name == '推荐' ? bannerList : null,
-                          ))
-                      .toList()))
-        ],
-      ),
+      body: LoadingContainer(
+          isLoading: _isLoading,
+          child: Column(
+            children: [
+              NavigationBar(
+                height: 50,
+                child: _appBar(),
+                color: Colors.white,
+              ),
+              Container(
+                color: Colors.white,
+                child: _tabBar(),
+              ),
+              Flexible(
+                  child: TabBarView(
+                      controller: _tabController,
+                      children: categoryList
+                          .map((e) => HomeTabPage(
+                                categoryName: e.name,
+                                bannerList: e.name == '推荐' ? bannerList : null,
+                              ))
+                          .toList()))
+            ],
+          )),
     );
   }
 
@@ -121,6 +125,10 @@ class _HomePageState extends HiState<HomePage>
     } on HiNetError catch (e) {
       print(e);
       showWarnToast(e.message);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

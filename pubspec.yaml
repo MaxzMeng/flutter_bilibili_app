@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   transparent_image: ^2.0.0
   cached_network_image: ^3.0.0
+  lottie: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/
+    - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
