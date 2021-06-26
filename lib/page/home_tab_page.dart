@@ -19,7 +19,7 @@ class HomeTabPage extends StatefulWidget {
   _HomeTabPageState createState() => _HomeTabPageState();
 }
 
-class _HomeTabPageState extends State<HomeTabPage> {
+class _HomeTabPageState extends State<HomeTabPage> with AutomaticKeepAliveClientMixin{
   List<VideoModel> videoList = [];
   int pageIndex = 1;
 
@@ -93,4 +93,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
       showWarnToast(e.message);
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
