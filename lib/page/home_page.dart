@@ -7,6 +7,7 @@ import 'package:flutter_bilibili_app/navigator/hi_navigator.dart';
 import 'package:flutter_bilibili_app/page/home_tab_page.dart';
 import 'package:flutter_bilibili_app/util/color.dart';
 import 'package:flutter_bilibili_app/util/toast_util.dart';
+import 'package:flutter_bilibili_app/util/view_util.dart';
 import 'package:flutter_bilibili_app/widget/loading_container.dart';
 import 'package:flutter_bilibili_app/widget/navigation_bar.dart';
 import 'package:underline_indicator/underline_indicator.dart';
@@ -21,7 +22,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends HiState<HomePage>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+    with
+        AutomaticKeepAliveClientMixin,
+        TickerProviderStateMixin,
+        WidgetsBindingObserver {
   var _listener;
   late TabController _tabController;
   List<CategoryMo> categoryList = [];
@@ -31,6 +35,7 @@ class _HomePageState extends HiState<HomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
     _tabController = TabController(length: categoryList.length, vsync: this);
     HiNavigator.getInstance().addListener(this._listener = (current, pre) {
       print('home:current:${current.page}');
@@ -47,8 +52,26 @@ class _HomePageState extends HiState<HomePage>
   @override
   void dispose() {
     HiNavigator.getInstance().removeListener(this._listener);
+    WidgetsBinding.instance?.removeObserver(this);
     _tabController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive: // 处于这种状态的应用程序应该假设它们可能在任何时候暂停。
+        break;
+      case AppLifecycleState.resumed: //从后台切换前台，界面可见
+        //fix Android压后台首页状态栏字体颜色变白，详情页状态栏字体变黑问题
+        changeStatusBar();
+        break;
+      case AppLifecycleState.paused: // 界面不可见，后台
+        break;
+      case AppLifecycleState.detached: // APP结束时调用
+        break;
+    }
   }
 
   @override

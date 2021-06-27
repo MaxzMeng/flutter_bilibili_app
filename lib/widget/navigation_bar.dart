@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bilibili_app/util/view_util.dart';
+import '../util/view_util.dart';
 
 class NavigationBar extends StatelessWidget {
   final StatusStyle statusStyle;
   final Color color;
   final double height;
-  final Widget child;
+  final Widget? child;
 
   const NavigationBar(
       {Key? key,
-      this.statusStyle = StatusStyle.DARK_CONTENT,
-      this.color = Colors.white,
-      this.height = 46,
-      required this.child})
+        this.statusStyle = StatusStyle.DARK_CONTENT,
+        this.color = Colors.white,
+        this.height = 46, this.child})
       : super(key: key);
 
   @override
